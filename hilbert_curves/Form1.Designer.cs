@@ -42,7 +42,7 @@
             this.depthTextBox.Name = "depthTextBox";
             this.depthTextBox.Size = new System.Drawing.Size(49, 26);
             this.depthTextBox.TabIndex = 2;
-            this.depthTextBox.Text = "0";
+            this.depthTextBox.Text = "1";
             this.depthTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label5
