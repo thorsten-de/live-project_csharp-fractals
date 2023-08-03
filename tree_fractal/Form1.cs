@@ -28,7 +28,7 @@ namespace tree_fractal
             double angle2 = ConvertInput(angle2TextBox, double.Parse);
 
             float length = ConvertInput(lengthTextBox, float.Parse);
-            double scale = ConvertInput(scaleTextBox, double.Parse);
+            float scale = ConvertInput(scaleTextBox, float.Parse);
 
             int depth = ConvertInput(depthTextBox, int.Parse);
             if (depth < 1 || depth > 20)
@@ -51,7 +51,7 @@ namespace tree_fractal
             MessageBox.Show(errorMessage, "Draw tree fractal", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); 
         }
         
-        private void DrawTreeFractal(double angle1, double angle2, float length, double scale, int depth)
+        private void DrawTreeFractal(double angle1, double angle2, float length, float scale, int depth)
         {
             int width = curvePictureBox.ClientSize.Width;
             int height = curvePictureBox.ClientSize.Height;
@@ -66,15 +66,20 @@ namespace tree_fractal
             curvePictureBox.Image = bitmap;        
         }
 
-        private void DrawBranch(Graphics g, int depth, double scale, double angle1, double angle2, double currentAngle, float currentLength, PointF current)
+        private void DrawBranch(Graphics g, int depth, float scale, double angle1, double angle2, double currentAngle, float currentLength, PointF current)
         {
+            if (depth == 0)
+                return;
+            
             SizeF delta = new SizeF(
                 (float)(currentLength * Math.Cos(currentAngle)),
                 (float)(currentLength * Math.Sin(currentAngle)));
 
-            g.DrawLine(Pens.Green, current, PointF.Add(current, delta));
+            PointF destination = PointF.Add(current, delta);
+            g.DrawLine(Pens.Green, current, destination);
+
+            DrawBranch(g, depth - 1, scale, angle1, angle2, currentAngle + angle1, currentLength * scale, destination);
+            DrawBranch(g, depth - 1, scale, angle1, angle2, currentAngle + angle2, currentLength * scale, destination);
         }
-
-
     }
 }
