@@ -22,22 +22,13 @@ namespace tree_fractal
 
         private void drawButton_Click(object sender, EventArgs e)
         {
-
-
-            double angle1 = ConvertInput(angle1TextBox, double.Parse);
-            double angle2 = ConvertInput(angle2TextBox, double.Parse);
-
-            float length = ConvertInput(lengthTextBox, float.Parse);
-            float scale = ConvertInput(scaleTextBox, float.Parse);
-
             int depth = ConvertInput(depthTextBox, int.Parse);
-            if (depth < 1 || depth > 20)
+            if (depth < 0 || depth > 8)
             {
                 ShowValidationError("Depth must be between 1 and 20");
                 return;
             }
 
-            DrawTreeFractal(DegreesToRadiants(angle1), DegreesToRadiants(angle2), length, scale, depth);
 
         }
 
