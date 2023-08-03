@@ -15,6 +15,8 @@ namespace tree_fractal
 {
     public partial class Form1 : Form
     {
+        public Pen Pen { get; } = Pens.Red;
+
         public Form1()
         {
             InitializeComponent();
@@ -25,52 +27,59 @@ namespace tree_fractal
             int depth = ConvertInput(depthTextBox, int.Parse);
             if (depth < 0 || depth > 8)
             {
-                ShowValidationError("Depth must be between 1 and 20");
+                ShowValidationError("Depth must be between 1 and 8");
                 return;
             }
 
-
-        }
-
-        private T ConvertInput<T>(TextBox textBox, Func<string, T> converter) => 
-            converter(textBox.Text);
-
-        private double DegreesToRadiants(double deg) => deg * Math.PI / 180;
-
-        private void ShowValidationError(string errorMessage)
-        {
-            MessageBox.Show(errorMessage, "Draw tree fractal", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); 
-        }
-        
-        private void DrawTreeFractal(double angle1, double angle2, float length, float scale, int depth)
-        {
             int width = curvePictureBox.ClientSize.Width;
             int height = curvePictureBox.ClientSize.Height;
             Bitmap bitmap = new Bitmap(width, height);
             Graphics g = Graphics.FromImage(bitmap); 
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.Clear(curvePictureBox.BackColor);
+            
+            PointF origin = new PointF(10, 2 * height / 3);
 
-
-            DrawBranch(g, depth, scale, angle1, angle2, DegreesToRadiants(-90), length, new PointF(width / 2, height - 10));
-
+            DrawKochCurve(g, depth, 0, width - 20, ref origin);
+            
             curvePictureBox.Image = bitmap;        
         }
 
-        private void DrawBranch(Graphics g, int depth, float scale, double angle1, double angle2, double currentAngle, float currentLength, PointF current)
+        private T ConvertInput<T>(TextBox textBox, Func<string, T> converter) => 
+            converter(textBox.Text);
+
+        private static double DegreesToRadiants(double deg) => deg * Math.PI / 180;
+
+        private void ShowValidationError(string errorMessage)
         {
-            if (depth == 0)
+            MessageBox.Show(errorMessage, "Draw tree fractal", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); 
+        }
+
+        private static readonly double[] _turns = new double[] {0, DegreesToRadiants(-60), DegreesToRadiants(60), 0 };
+
+        private void DrawKochCurve(Graphics g, int depth, double angle, float length, ref PointF pos)
+        { 
+            if (depth < 1)
+            {
+
+                PointF destination = CalculateDestination(pos, angle, length);
+                g.DrawLine(Pen, pos, destination);
+                pos = destination;
                 return;
-            
-            SizeF delta = new SizeF(
-                (float)(currentLength * Math.Cos(currentAngle)),
-                (float)(currentLength * Math.Sin(currentAngle)));
+            }
 
-            PointF destination = PointF.Add(current, delta);
-            g.DrawLine(Pens.Green, current, destination);
+            float newLength = length / 3.0f;            
+            foreach (var turnAngle in _turns)
+                DrawKochCurve(g, depth - 1, angle + turnAngle, newLength, ref pos);
+        }
 
-            DrawBranch(g, depth - 1, scale, angle1, angle2, currentAngle + angle1, currentLength * scale, destination);
-            DrawBranch(g, depth - 1, scale, angle1, angle2, currentAngle + angle2, currentLength * scale, destination);
+
+        private static PointF CalculateDestination(PointF pos, double angle, float length)
+        {
+            var delta=  new SizeF(
+                (float)(length * Math.Cos(angle)),
+                (float)(length * Math.Sin(angle)));
+            return PointF.Add(pos, delta);
         }
     }
 }
