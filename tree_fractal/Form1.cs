@@ -68,9 +68,13 @@ namespace tree_fractal
 
         private void DrawBranch(Graphics g, int depth, double scale, double angle1, double angle2, double currentAngle, float currentLength, PointF current)
         {
-            SizeF delta = new SizeF(-currentLength, -currentLength);
+            SizeF delta = new SizeF(
+                (float)(currentLength * Math.Cos(currentAngle)),
+                (float)(currentLength * Math.Sin(currentAngle)));
+
             g.DrawLine(Pens.Green, current, PointF.Add(current, delta));
         }
+
 
     }
 }
