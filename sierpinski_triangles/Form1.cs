@@ -25,9 +25,9 @@ namespace SierpinskyTriangles
         private void drawButton_Click(object sender, EventArgs e)
         {
             int depth = ConvertInput(depthTextBox, int.Parse);
-            if (depth < 1 || depth > 8)
+            if (depth < 1 || depth > 6)
             {
-                ShowValidationError("Depth must be between 1 and 8");
+                ShowValidationError("Depth must be between 1 and 6");
                 return;
             }
 
@@ -38,35 +38,25 @@ namespace SierpinskyTriangles
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.Clear(curvePictureBox.BackColor);
 
-            float size = Math.Min(width, height) - 20;
-            float startLength = (float)(size / (Math.Pow(2, depth) - 1));
 
-            PointF origin = new PointF((width - size) / 2f, (height - size) / 2f);
+            DrawSiepinskyTriangle(g, depth, new PointF(width / 2f, 10), new PointF(10, height - 10), new PointF(width - 10, height - 10));
 
-            DrawHilbertCurve(g, depth, new SizeF(startLength, 0), ref origin);
 
             curvePictureBox.Image = bitmap;
+        }
+
+        private void DrawSiepinskyTriangle(Graphics g, int depth, PointF p1, PointF p2, PointF p3)
+        {
+            g.FillPolygon(Brushes.Red, new PointF[] { p1, p2, p3 });
         }
 
         private T ConvertInput<T>(TextBox textBox, Func<string, T> converter) =>
             converter(textBox.Text);
 
-        private static double DegreesToRadiants(double deg) => deg * Math.PI / 180;
 
         private void ShowValidationError(string errorMessage)
         {
             MessageBox.Show(errorMessage, "Draw tree fractal", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-        }
-
-        private void DrawHilbertCurve(Graphics g, int depth, SizeF delta, ref PointF pos)
-        {
-            if (depth > 1) DrawHilbertCurve(g, depth - 1, new SizeF(delta.Height, delta.Width), ref pos);
-            DrawRelative(g, delta, ref pos);
-            if (depth > 1) DrawHilbertCurve(g, depth - 1, delta, ref pos);
-            DrawRelative(g, new SizeF(delta.Height, delta.Width), ref pos);
-            if (depth > 1) DrawHilbertCurve(g, depth - 1, delta, ref pos);
-            DrawRelative(g, new SizeF(-delta.Width, -delta.Height), ref pos);
-            if (depth > 1) DrawHilbertCurve(g, depth - 1, new SizeF(-delta.Height, -delta.Width), ref pos);
         }
 
         private void DrawRelative(Graphics g, SizeF delta, ref PointF pos)
