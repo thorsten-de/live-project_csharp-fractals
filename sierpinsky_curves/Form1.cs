@@ -39,11 +39,11 @@ namespace SierpinskyCurves
             g.Clear(curvePictureBox.BackColor);
 
             float size = Math.Min(width, height) - 20;
-            float startLength = (float)(size / (Math.Pow(2, depth) - 1));
+            float startLength = (float)(size / (Math.Pow(2, depth + 2) - 1));
 
-            PointF origin = new PointF((width - size) / 2f, (height - size) / 2f);
+            PointF origin = new PointF((width - size) / 2f + startLength, (height - size) / 2f);
 
-            DrawHilbertCurve(g, depth, new SizeF(startLength, 0), ref origin);
+            DrawSierpinskyCurve(g, depth, startLength, ref origin);
 
             curvePictureBox.Image = bitmap;
         }
@@ -51,28 +51,85 @@ namespace SierpinskyCurves
         private T ConvertInput<T>(TextBox textBox, Func<string, T> converter) =>
             converter(textBox.Text);
 
-        private static double DegreesToRadiants(double deg) => deg * Math.PI / 180;
-
         private void ShowValidationError(string errorMessage)
         {
             MessageBox.Show(errorMessage, "Draw tree fractal", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
-        private void DrawHilbertCurve(Graphics g, int depth, SizeF delta, ref PointF pos)
+        private void DrawSierpinskyCurve(Graphics g, int depth, float size, ref PointF pos)
         {
-            if (depth > 1) DrawHilbertCurve(g, depth - 1, new SizeF(delta.Height, delta.Width), ref pos);
-            DrawRelative(g, delta, ref pos);
-            if (depth > 1) DrawHilbertCurve(g, depth - 1, delta, ref pos);
-            DrawRelative(g, new SizeF(delta.Height, delta.Width), ref pos);
-            if (depth > 1) DrawHilbertCurve(g, depth - 1, delta, ref pos);
-            DrawRelative(g, new SizeF(-delta.Width, -delta.Height), ref pos);
-            if (depth > 1) DrawHilbertCurve(g, depth - 1, new SizeF(-delta.Height, -delta.Width), ref pos);
+            SegmentTop(g, depth, size, ref pos);
+            DrawRelative(g, new SizeF(size, size), ref pos, Pens.Red);
+            SegmentRight(g, depth, size, ref pos);
+            DrawRelative(g, new SizeF(-size, size), ref pos, Pens.Red);
+            SegmentBottom(g, depth, size, ref pos);
+            DrawRelative(g, new SizeF(-size, -size), ref pos, Pens.Red);
+            SegmentLeft(g, depth, size, ref pos);
+            DrawRelative(g, new SizeF(size, -size), ref pos, Pens.Red);
         }
 
-        private void DrawRelative(Graphics g, SizeF delta, ref PointF pos)
+        private void SegmentTop(Graphics g, int depth, float size, ref PointF pos)
+        {
+            if (depth > 0)
+            {
+                depth--;
+                SegmentTop(g, depth, size, ref pos);
+                DrawRelative(g, new SizeF(size, size), ref pos);
+                SegmentRight(g, depth, size, ref pos);
+                DrawRelative(g, new SizeF(2 * size, 0), ref pos);
+                SegmentLeft(g, depth, size, ref pos);
+                DrawRelative(g, new SizeF(size, -size), ref pos);
+                SegmentTop(g, depth, size, ref pos);
+            }
+        }
+        private void SegmentRight(Graphics g, int depth, float size, ref PointF pos)
+        {
+            if (depth > 0)
+            {
+                depth--;
+                SegmentRight(g, depth, size, ref pos);
+                DrawRelative(g, new SizeF(-size, size), ref pos);
+                SegmentBottom(g, depth, size, ref pos);
+                DrawRelative(g, new SizeF(0, 2 * size), ref pos);
+                SegmentTop(g, depth, size, ref pos);
+                DrawRelative(g, new SizeF(size, size), ref pos);
+                SegmentRight(g, depth, size, ref pos);
+            }
+        }
+        private void SegmentBottom(Graphics g, int depth, float size, ref PointF pos)
+        {
+            if (depth > 0)
+            {
+                depth--;
+                SegmentBottom(g, depth, size, ref pos);
+                DrawRelative(g, new SizeF(-size, -size), ref pos);
+                SegmentLeft(g, depth, size, ref pos);
+                DrawRelative(g, new SizeF(-2 * size, 0), ref pos);
+                SegmentRight(g, depth, size, ref pos);
+                DrawRelative(g, new SizeF(-size, size), ref pos);
+                SegmentBottom(g, depth, size, ref pos);
+            }
+        }
+
+        private void SegmentLeft(Graphics g, int depth, float size, ref PointF pos)
+        {
+            if (depth > 0)
+            {
+                depth--;
+                SegmentLeft(g, depth, size, ref pos);
+                DrawRelative(g, new SizeF(size, -size), ref pos);
+                SegmentTop(g, depth, size, ref pos);
+                DrawRelative(g, new SizeF(0, -2 * size), ref pos);
+                SegmentBottom(g, depth, size, ref pos);
+                DrawRelative(g, new SizeF(-size, -size), ref pos);
+                SegmentLeft(g, depth, size, ref pos);
+            }
+        }
+
+        private void DrawRelative(Graphics g, SizeF delta, ref PointF pos, Pen pen = null)
         {
             PointF destination = PointF.Add(pos, delta);
-            g.DrawLine(Pen, pos, destination);
+            g.DrawLine(pen ?? Pen, pos, destination);
             pos = destination;
         }
     }
