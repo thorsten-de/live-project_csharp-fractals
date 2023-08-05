@@ -1,3 +1,4 @@
+using ChaosGame.Games;
 using System.Diagnostics;
 
 namespace ChaosGame
@@ -10,6 +11,8 @@ namespace ChaosGame
         private int NumDotsDrawn = 0;
 
         private Bitmap ChaosBitmap = null!;
+
+        private IChaosGame chaosGame = new Original();
 
         private PointF[] Points = null!;
         private PointF CurrentPoint;
@@ -44,11 +47,7 @@ namespace ChaosGame
             float halfSize = Math.Min(width, height) / 2f - 10;
             PointF center = new PointF(width / 2f, height / 2f);
 
-            Points = new PointF[] {
-                new PointF(center.X - halfSize, center.Y + halfSize),
-                new PointF(center.X + halfSize, center.Y + halfSize),
-                new PointF(center.X, center.Y - halfSize),
-            };
+            Points = chaosGame.GenerateControlPoints(center, halfSize);
 
             CurrentPoint = center;
             NumDotsDrawn = 0;
@@ -80,13 +79,12 @@ namespace ChaosGame
             chaosPictureBox.Refresh();
         }
 
-        private static readonly Color ForeColor = Color.Red;
         private void DrawDot()
         {
             PointF controlPoint = Points[rand.Next(0, Points.Length)];
             SizeF delta = new SizeF((controlPoint.X - CurrentPoint.X) / 2f, (controlPoint.Y - CurrentPoint.Y) / 2f);
             CurrentPoint = PointF.Add(CurrentPoint, delta);
-            ChaosBitmap.SetPixel((int)CurrentPoint.X, (int)CurrentPoint.Y, ForeColor);
+            ChaosBitmap.SetPixel((int)CurrentPoint.X, (int)CurrentPoint.Y, chaosGame.ForeColor);
         }
     }
 }
