@@ -44,7 +44,7 @@
             toolStrip1.Items.AddRange(new ToolStripItem[] { startButton });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(800, 34);
+            toolStrip1.Size = new Size(778, 34);
             toolStrip1.TabIndex = 0;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -65,15 +65,19 @@
             chaosPictureBox.Location = new Point(0, 34);
             chaosPictureBox.Margin = new Padding(8);
             chaosPictureBox.Name = "chaosPictureBox";
-            chaosPictureBox.Size = new Size(800, 416);
+            chaosPictureBox.Size = new Size(778, 730);
             chaosPictureBox.TabIndex = 1;
             chaosPictureBox.TabStop = false;
+            // 
+            // dotsTimer
+            // 
+            dotsTimer.Tick += dotsTimer_Tick;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(778, 764);
             Controls.Add(chaosPictureBox);
             Controls.Add(toolStrip1);
             Name = "Form1";
