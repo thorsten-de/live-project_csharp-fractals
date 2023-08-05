@@ -12,7 +12,12 @@ namespace ChaosGame
 
         private Bitmap ChaosBitmap = null!;
 
-        private IChaosGame chaosGame = new Original();
+        private IChaosGame? chaosGame = null!;
+        private IChaosGame[] knownGames = new IChaosGame[]
+        {
+            new Original(),
+            new None(),
+        };
 
         private PointF[] Points = null!;
         private PointF CurrentPoint;
@@ -20,6 +25,11 @@ namespace ChaosGame
         public Form1()
         {
             InitializeComponent();
+
+            foreach (IChaosGame game in knownGames)
+                restrictionComboBox.Items.Add(game);
+
+            restrictionComboBox.SelectedItem = knownGames.Last();
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -32,6 +42,7 @@ namespace ChaosGame
 
         private void Start()
         {
+            chaosGame = restrictionComboBox.SelectedItem as IChaosGame;
             Drawing = true;
             startButton.Text = "Stop";
             int width = chaosPictureBox.ClientSize.Width;

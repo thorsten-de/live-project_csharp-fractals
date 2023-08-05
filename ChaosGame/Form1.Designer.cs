@@ -31,6 +31,8 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             toolStrip1 = new ToolStrip();
+            toolStripLabel1 = new ToolStripLabel();
+            restrictionComboBox = new ToolStripComboBox();
             startButton = new ToolStripButton();
             chaosPictureBox = new PictureBox();
             dotsTimer = new System.Windows.Forms.Timer(components);
@@ -41,15 +43,28 @@
             // toolStrip1
             // 
             toolStrip1.ImageScalingSize = new Size(24, 24);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { startButton });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripLabel1, restrictionComboBox, startButton });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(778, 34);
+            toolStrip1.Size = new Size(578, 34);
             toolStrip1.TabIndex = 0;
             toolStrip1.Text = "toolStrip1";
             // 
+            // toolStripLabel1
+            // 
+            toolStripLabel1.Name = "toolStripLabel1";
+            toolStripLabel1.Size = new Size(98, 29);
+            toolStripLabel1.Text = "Restriction:";
+            // 
+            // restrictionComboBox
+            // 
+            restrictionComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            restrictionComboBox.Name = "restrictionComboBox";
+            restrictionComboBox.Size = new Size(121, 34);
+            // 
             // startButton
             // 
+            startButton.Alignment = ToolStripItemAlignment.Right;
             startButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
             startButton.Image = (Image)resources.GetObject("startButton.Image");
             startButton.ImageTransparentColor = Color.Magenta;
@@ -65,7 +80,7 @@
             chaosPictureBox.Location = new Point(0, 34);
             chaosPictureBox.Margin = new Padding(8);
             chaosPictureBox.Name = "chaosPictureBox";
-            chaosPictureBox.Size = new Size(778, 730);
+            chaosPictureBox.Size = new Size(578, 530);
             chaosPictureBox.TabIndex = 1;
             chaosPictureBox.TabStop = false;
             // 
@@ -77,7 +92,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(778, 764);
+            ClientSize = new Size(578, 564);
             Controls.Add(chaosPictureBox);
             Controls.Add(toolStrip1);
             Name = "Form1";
@@ -95,5 +110,7 @@
         private ToolStripButton startButton;
         private PictureBox chaosPictureBox;
         private System.Windows.Forms.Timer dotsTimer;
+        private ToolStripLabel toolStripLabel1;
+        private ToolStripComboBox restrictionComboBox;
     }
 }
