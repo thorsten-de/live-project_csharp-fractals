@@ -1,3 +1,4 @@
+using ChaosGame.Games;
 using System.Diagnostics;
 
 namespace ChaosGame
@@ -11,12 +12,29 @@ namespace ChaosGame
 
         private Bitmap ChaosBitmap = null!;
 
+        private IChaosGame? chaosGame = null!;
+        private IChaosGame[] knownGames = new IChaosGame[]
+        {
+            new Original(),
+            new None(),
+            new Restriction1(),
+            new Restriction2(),
+            new Restriction3(60f),
+            new Restriction4(),
+            new Restriction5()
+        };
+
         private PointF[] Points = null!;
         private PointF CurrentPoint;
 
         public Form1()
         {
             InitializeComponent();
+
+            foreach (IChaosGame game in knownGames)
+                restrictionComboBox.Items.Add(game);
+
+            restrictionComboBox.SelectedItem = knownGames.Last();
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -29,6 +47,7 @@ namespace ChaosGame
 
         private void Start()
         {
+            chaosGame = restrictionComboBox.SelectedItem as IChaosGame;
             Drawing = true;
             startButton.Text = "Stop";
             int width = chaosPictureBox.ClientSize.Width;
@@ -44,11 +63,7 @@ namespace ChaosGame
             float halfSize = Math.Min(width, height) / 2f - 10;
             PointF center = new PointF(width / 2f, height / 2f);
 
-            Points = new PointF[] {
-                new PointF(center.X - halfSize, center.Y + halfSize),
-                new PointF(center.X + halfSize, center.Y + halfSize),
-                new PointF(center.X, center.Y - halfSize),
-            };
+            Points = chaosGame.GenerateControlPoints(center, halfSize);
 
             CurrentPoint = center;
             NumDotsDrawn = 0;
@@ -76,17 +91,22 @@ namespace ChaosGame
             for (int i = 0; i < LoopCount; i++)
                 DrawDot();
 
-            NumDotsDrawn += LoopCount;
             chaosPictureBox.Refresh();
         }
 
-        private static readonly Color ForeColor = Color.Red;
         private void DrawDot()
         {
-            PointF controlPoint = Points[rand.Next(0, Points.Length)];
+            int index = rand.Next(0, Points.Length);
+            PointF controlPoint = Points[index];
             SizeF delta = new SizeF((controlPoint.X - CurrentPoint.X) / 2f, (controlPoint.Y - CurrentPoint.Y) / 2f);
-            CurrentPoint = PointF.Add(CurrentPoint, delta);
-            ChaosBitmap.SetPixel((int)CurrentPoint.X, (int)CurrentPoint.Y, ForeColor);
+            var possiblePoint = PointF.Add(CurrentPoint, delta);
+
+            if (chaosGame.ShouldDrawPoint(index, possiblePoint))
+            {
+                CurrentPoint = possiblePoint;
+                ChaosBitmap.SetPixel((int)CurrentPoint.X, (int)CurrentPoint.Y, chaosGame.ForeColor);
+                NumDotsDrawn++;
+            }
         }
     }
 }
