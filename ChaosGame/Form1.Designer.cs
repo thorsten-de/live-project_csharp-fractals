@@ -54,13 +54,16 @@
             startButton.Image = (Image)resources.GetObject("startButton.Image");
             startButton.ImageTransparentColor = Color.Magenta;
             startButton.Name = "startButton";
-            startButton.Size = new Size(57, 29);
-            startButton.Text = "Start!";
+            startButton.Size = new Size(52, 29);
+            startButton.Text = "Start";
+            startButton.Click += startButton_Click;
             // 
             // chaosPictureBox
             // 
+            chaosPictureBox.BorderStyle = BorderStyle.Fixed3D;
             chaosPictureBox.Dock = DockStyle.Fill;
             chaosPictureBox.Location = new Point(0, 34);
+            chaosPictureBox.Margin = new Padding(8);
             chaosPictureBox.Name = "chaosPictureBox";
             chaosPictureBox.Size = new Size(800, 416);
             chaosPictureBox.TabIndex = 1;
