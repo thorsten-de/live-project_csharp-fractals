@@ -1,6 +1,6 @@
 ﻿namespace ChaosGame.Games
 {
-    internal abstract class SquareGame
+    internal abstract class SquareGame: IChaosGame
     {
         public Color ForeColor => Color.Snow;
 

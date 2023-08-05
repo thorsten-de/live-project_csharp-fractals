@@ -17,6 +17,7 @@ namespace ChaosGame
         {
             new Original(),
             new None(),
+            new Restriction1(),
         };
 
         private PointF[] Points = null!;
@@ -92,10 +93,10 @@ namespace ChaosGame
         private void DrawDot()
         {
             int index = rand.Next(0, Points.Length);
-            PointF controlPoint = Points[index]; 
+            PointF controlPoint = Points[index];
             SizeF delta = new SizeF((controlPoint.X - CurrentPoint.X) / 2f, (controlPoint.Y - CurrentPoint.Y) / 2f);
             var possiblePoint = PointF.Add(CurrentPoint, delta);
-            
+
             if (chaosGame.ShouldDrawPoint(index, possiblePoint))
             {
                 CurrentPoint = possiblePoint;

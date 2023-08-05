@@ -86,6 +86,7 @@
             // 
             // dotsTimer
             // 
+            dotsTimer.Interval = 20;
             dotsTimer.Tick += dotsTimer_Tick;
             // 
             // Form1
