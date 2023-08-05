@@ -19,6 +19,7 @@ namespace ChaosGame
             new None(),
             new Restriction1(),
             new Restriction2(),
+            new Restriction3(60f)
         };
 
         private PointF[] Points = null!;

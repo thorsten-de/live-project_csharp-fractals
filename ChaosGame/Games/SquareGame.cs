@@ -1,17 +1,23 @@
-﻿namespace ChaosGame.Games
+﻿using System.Runtime.InteropServices;
+
+namespace ChaosGame.Games
 {
-    internal abstract class SquareGame: IChaosGame
+    internal abstract class SquareGame : IChaosGame
     {
         protected int _lastIndex = -1;
         public Color ForeColor => Color.Snow;
+        protected PointF _center;
 
-        public PointF[] GenerateControlPoints(PointF center, float halfSize) =>
-            new PointF[]{
+        public PointF[] GenerateControlPoints(PointF center, float halfSize)
+        {
+            _center = center;
+            return new PointF[]{
                 new PointF(center.X - halfSize, center.Y - halfSize),
                 new PointF(center.X + halfSize, center.Y - halfSize),
                 new PointF(center.X + halfSize, center.Y + halfSize),
                 new PointF(center.X - halfSize, center.Y + halfSize),
             };
+        }
 
         public bool ShouldDrawPoint(int index, PointF pos)
         {
@@ -39,5 +45,27 @@
             index == (_lastIndex + 1) % 4;
 
         public override string ToString() => "2";
+    }
+
+    internal class Restriction3 : SquareGame
+    {
+        private float _distance;
+
+        public Restriction3(float distance)
+        {
+            _distance = distance;
+        }
+
+        public override bool IsRestricted(int index, PointF pos) =>
+            DistanceToCenter(pos) <= _distance;
+
+        public override string ToString() => "3";
+
+        private float DistanceToCenter(PointF pos)
+        {
+            float deltaX = pos.X - _center.X;
+            float deltaY = pos.Y - _center.Y;
+            return (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
+        }
     }
 }
