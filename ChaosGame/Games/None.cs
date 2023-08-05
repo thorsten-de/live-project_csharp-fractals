@@ -8,7 +8,7 @@ namespace ChaosGame.Games
 {
     internal class None : SquareGame, IChaosGame
     {
-        public override bool ShouldDrawPoint(int index, PointF pos) => true;
+        public override bool IsRestricted(int index, PointF pos) => false;
 
         public override string ToString()
         {
