@@ -81,7 +81,7 @@
             Controls.Add(chaosPictureBox);
             Controls.Add(toolStrip1);
             Name = "Form1";
-            Text = "Form1";
+            Text = "Chaos Game";
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)chaosPictureBox).EndInit();
