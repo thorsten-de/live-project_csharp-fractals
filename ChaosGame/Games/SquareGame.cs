@@ -72,7 +72,7 @@ namespace ChaosGame.Games
     internal class Restriction4 : SquareGame
     {
         public override bool IsRestricted(int index, PointF pos) =>
-            index == (_lastIndex + 2) % 4 || _lastIndex == (index + 2) % 4;
+            index == (_lastIndex + 2) % 4;
 
         public override string ToString() => "4";
     }
@@ -84,7 +84,7 @@ namespace ChaosGame.Games
         public override bool IsRestricted(int index, PointF pos)
         {
             if (_lastIndex == _prevLastIndex &&
-                (index == (_lastIndex + 1) % 4 || _lastIndex == (index + 1) % 4))
+                (index == (_lastIndex + 1) % 4 || index == (_lastIndex + 3) % 4))
             {
                 return true;
             }
