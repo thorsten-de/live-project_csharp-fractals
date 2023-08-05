@@ -68,4 +68,12 @@ namespace ChaosGame.Games
             return (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
         }
     }
+
+    internal class Restriction4 : SquareGame
+    {
+        public override bool IsRestricted(int index, PointF pos) =>
+            index == (_lastIndex + 2) % 4 || _lastIndex == (index + 2) % 4;
+
+        public override string ToString() => "4";
+    }
 }
