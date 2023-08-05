@@ -76,4 +76,23 @@ namespace ChaosGame.Games
 
         public override string ToString() => "4";
     }
+
+    internal class Restriction5 : SquareGame
+    {
+        private int _prevLastIndex = -2;
+
+        public override bool IsRestricted(int index, PointF pos)
+        {
+            if (_lastIndex == _prevLastIndex &&
+                (index == (_lastIndex + 1) % 4 || _lastIndex == (index + 1) % 4))
+            {
+                return true;
+            }
+            
+            _prevLastIndex = _lastIndex;
+            return false;
+        }
+
+        public override string ToString() => "5";
+    }
 }
