@@ -10,5 +10,6 @@ namespace ChaosGame.Games
     {
         PointF[] GenerateControlPoints(PointF center, float halfSize);
         Color ForeColor { get; }
+        bool ShouldDrawPoint(int index, PointF pos);
     }
 }

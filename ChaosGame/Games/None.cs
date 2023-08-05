@@ -6,17 +6,9 @@ using System.Threading.Tasks;
 
 namespace ChaosGame.Games
 {
-    internal class None : IChaosGame
+    internal class None : SquareGame, IChaosGame
     {
-        public Color ForeColor => Color.Snow;
-
-        public PointF[] GenerateControlPoints(PointF center, float halfSize) =>
-            new PointF[]{
-                new PointF(center.X - halfSize, center.Y - halfSize),
-                new PointF(center.X + halfSize, center.Y - halfSize),
-                new PointF(center.X - halfSize, center.Y + halfSize),
-                new PointF(center.X + halfSize, center.Y + halfSize),
-            };
+        public override bool ShouldDrawPoint(int index, PointF pos) => true;
 
         public override string ToString()
         {

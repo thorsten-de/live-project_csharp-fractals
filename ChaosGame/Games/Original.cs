@@ -15,7 +15,9 @@ namespace ChaosGame.Games
                 new PointF(center.X, center.Y - halfSize),
             };
 
-        public override string ToString() => "Original ChaosGame";
+        public override string ToString() => "Original";
+
+        public bool ShouldDrawPoint(int index, PointF pos) => true;
 
         public Color ForeColor => Color.Red;
     }

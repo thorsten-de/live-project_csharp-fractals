@@ -86,16 +86,22 @@ namespace ChaosGame
             for (int i = 0; i < LoopCount; i++)
                 DrawDot();
 
-            NumDotsDrawn += LoopCount;
             chaosPictureBox.Refresh();
         }
 
         private void DrawDot()
         {
-            PointF controlPoint = Points[rand.Next(0, Points.Length)];
+            int index = rand.Next(0, Points.Length);
+            PointF controlPoint = Points[index]; 
             SizeF delta = new SizeF((controlPoint.X - CurrentPoint.X) / 2f, (controlPoint.Y - CurrentPoint.Y) / 2f);
-            CurrentPoint = PointF.Add(CurrentPoint, delta);
-            ChaosBitmap.SetPixel((int)CurrentPoint.X, (int)CurrentPoint.Y, chaosGame.ForeColor);
+            var possiblePoint = PointF.Add(CurrentPoint, delta);
+            
+            if (chaosGame.ShouldDrawPoint(index, possiblePoint))
+            {
+                CurrentPoint = possiblePoint;
+                ChaosBitmap.SetPixel((int)CurrentPoint.X, (int)CurrentPoint.Y, chaosGame.ForeColor);
+                NumDotsDrawn++;
+            }
         }
     }
 }
