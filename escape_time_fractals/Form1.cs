@@ -312,15 +312,15 @@ namespace escape_time_fractals
         {
             InputForm dlg = new InputForm();
             dlg.Text = "Area to Select";
-            dlg.captionLabel.Text = "xmin, ymin, xmax, ymax:";
+            dlg.captionLabel.Text = "xmin; ymin; xmax; ymax;";
             dlg.valueTextBox.Text =
-                string.Format("{0}, {1}, {2}, {3}",
+                string.Format("{0};{1}; {2}; {3}",
                     WorldBounds.Left, WorldBounds.Top,
                     WorldBounds.Right, WorldBounds.Bottom);
 
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                string[] fields = dlg.valueTextBox.Text.Split(',');
+                string[] fields = dlg.valueTextBox.Text.Split(';');
                 float xmin = float.Parse(fields[0]);
                 float ymin = float.Parse(fields[1]);
                 float xmax = float.Parse(fields[2]);
@@ -464,7 +464,7 @@ namespace escape_time_fractals
 
 
             stopwatch.Stop();
-            Console.Write(string.Format("{0}, {1}, {2}, {3} - ",
+            Console.WriteLine(string.Format("{0}; {1}; {2}; {3}",
                 WorldBounds.Left, WorldBounds.Top,
                 WorldBounds.Right, WorldBounds.Bottom));
             Console.WriteLine($"{stopwatch.ElapsedMilliseconds}ms to compute ({fractalPictureBox.ClientSize}, MaxIterations={MaxIterations}");
