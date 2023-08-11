@@ -472,9 +472,15 @@ namespace escape_time_fractals
             out Complex z, out Complex c, out int stepNum)
         {
             // Replace the following with your code.
-            z = new Complex();
-            c = new Complex();
+            z = Z0;
+            c = new Complex(x, y);
             stepNum = 0;
+            
+            while (stepNum < MaxIterations && z.Magnitude() < MaxMagnitude)
+            {
+                z = z * z + c;
+                stepNum++;
+            }
         }
 
         // Calculate the Julia set values for this point.
@@ -502,6 +508,14 @@ namespace escape_time_fractals
         private void ColorPixel(Bitmap32 bm32, int ix, int iy,
             Complex z, Complex c, int stepNum)
         {
+            if (stepNum >= MaxIterations)
+                stepNum = 0;
+
+            Color color = SmoothingType == SmoothingTypes.None
+                ? FractalColors[stepNum % NumColors]
+                : SmoothColor(z, c, stepNum);
+
+            bm32.SetPixel(ix, iy, color.R, color.G, color.B, 255);
         }
 
         // Return a smooth mandelbrot color.
