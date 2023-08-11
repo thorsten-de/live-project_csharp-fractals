@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Numerics;
+using System.Threading.Tasks;
 
 namespace escape_time_fractals
 {
@@ -309,15 +312,15 @@ namespace escape_time_fractals
         {
             InputForm dlg = new InputForm();
             dlg.Text = "Area to Select";
-            dlg.captionLabel.Text = "xmin, ymin, xmax, ymax:";
+            dlg.captionLabel.Text = "xmin; ymin; xmax; ymax;";
             dlg.valueTextBox.Text =
-                string.Format("{0}, {1}, {2}, {3}",
+                string.Format("{0};{1}; {2}; {3}",
                     WorldBounds.Left, WorldBounds.Top,
                     WorldBounds.Right, WorldBounds.Bottom);
 
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                string[] fields = dlg.valueTextBox.Text.Split(',');
+                string[] fields = dlg.valueTextBox.Text.Split(';');
                 float xmin = float.Parse(fields[0]);
                 float ymin = float.Parse(fields[1]);
                 float xmax = float.Parse(fields[2]);
@@ -398,9 +401,6 @@ namespace escape_time_fractals
 
             // Make sure the aspect ratios match.
             AdjustBounds();
-            Console.WriteLine(string.Format("{0}, {1}, {2}, {3}",
-                WorldBounds.Left, WorldBounds.Top,
-                WorldBounds.Right, WorldBounds.Bottom));
 
             // Find the X and Y scale factors.
             float dx = WorldBounds.Width /
@@ -417,15 +417,19 @@ namespace escape_time_fractals
             Bitmap32 bm32 = new Bitmap32(bm);
             bm32.LockBitmap();
 
+            var stopwatch = Stopwatch.StartNew();
             // Draw the fractal.
             // (x, y) will be the corresponding point in world coordinates.
-            float y = WorldBounds.Y;
+            //float y = WorldBounds.Y;
 
             // Loop over the pixels.
-            for (int iy = 0; iy < bm32.Height; iy++)
+
+            Parallel.For(0, height, iy =>
+            //for (int iy = 0; iy < height; iy++)
             {
+                float y = DtoW(new PointF(0, iy)).Y;
                 float x = WorldBounds.X;
-                for (int ix = 0; ix < bm32.Width; ix++)
+                for (int ix = 0; ix < width; ix++)
                 {
                     // Device coordinate point (ix, iy) corresponds
                     // to world coordinate point (x, y).
@@ -437,7 +441,7 @@ namespace escape_time_fractals
                     switch (FractalType)
                     {
                         case FractalTypes.Mandelbrot:
-                            MandelbrotPoint(x, y, out z, out c, out stepNum);
+                            OptimizedMandelbrotPoint(x, y, out z, out c, out stepNum);
                             break;
                         case FractalTypes.Julia:
                             JuliaPoint(x, y, out z, out c, out stepNum);
@@ -455,9 +459,15 @@ namespace escape_time_fractals
                 }
 
                 // Move to the next row in world coordinates.
-                y += dy;
-            }
+             //   y += dy;
+            });
 
+
+            stopwatch.Stop();
+            Console.WriteLine(string.Format("{0}; {1}; {2}; {3}",
+                WorldBounds.Left, WorldBounds.Top,
+                WorldBounds.Right, WorldBounds.Bottom));
+            Console.WriteLine($"{stopwatch.ElapsedMilliseconds}ms to compute ({fractalPictureBox.ClientSize}, MaxIterations={MaxIterations}");
 
             // Unlock the Bitmap32.
             bm32.UnlockBitmap();
@@ -472,29 +482,74 @@ namespace escape_time_fractals
             out Complex z, out Complex c, out int stepNum)
         {
             // Replace the following with your code.
-            z = new Complex();
-            c = new Complex();
+            z = Z0;
+            c = new Complex(x, y);
             stepNum = 0;
+             
+            while (stepNum < MaxIterations && z.Magnitude < MaxMagnitude)
+            {
+                z = z * z + c;
+                stepNum++;
+            }
+        }
+
+        // Calculate the Mandelbrot set values for this point.
+        private void OptimizedMandelbrotPoint(double x0, double y0,
+            out Complex z, out Complex c, out int stepNum)
+        {
+            // Replace the following with your code.
+            double x2 = 0, x = 0;
+            double y2= 0, y = 0;
+            stepNum = 0;
+
+            while (stepNum < MaxIterations && x2 + y2 <= 4)
+            {
+                y = (x + x) * y + y0;
+                x = x2 - y2 + x0;
+                x2 = x * x;
+                y2 = y * y;
+
+                stepNum++;
+            }
+
+            z = new Complex(x, y);
+            c = new Complex(x0, y0);
         }
 
         // Calculate the Julia set values for this point.
         private void JuliaPoint(double x, double y,
             out Complex z, out Complex c, out int stepNum)
         {
-            // Replace the following with your code.
-            z = new Complex();
-            c = new Complex();
+            z = new Complex(x, y);
+            c = C0;
             stepNum = 0;
+            while (stepNum < MaxIterations && z.Magnitude < MaxMagnitude)
+            {
+                z = z * z + c;
+                stepNum++;
+            }
         }
 
         // Calculate the vortex fractal values for this point.
         private void VortexPoint(double x, double y,
             out Complex z, out Complex c, out int stepNum)
         {
-            // Replace the following with your code.
-            z = new Complex();
-            c = new Complex();
+            var z_1 = new Complex(x, y);
+            var zN = new Complex(x, y);
+            c = new Complex(0.62, -0.55);
+            
             stepNum = 0;
+            while (stepNum < MaxIterations && zN.Magnitude < MaxMagnitude)
+            {
+                var zNext = zN * zN + c.Real + c.Imaginary * z_1;
+                z_1 = zN;
+                zN = zNext;
+
+                stepNum++;
+
+            }
+
+            z = zN;
         }
 
         // Set the pixel's color according to the
@@ -502,6 +557,14 @@ namespace escape_time_fractals
         private void ColorPixel(Bitmap32 bm32, int ix, int iy,
             Complex z, Complex c, int stepNum)
         {
+            if (stepNum >= MaxIterations)
+                stepNum = 0;
+
+            Color color = SmoothingType == SmoothingTypes.None
+                ? FractalColors[stepNum % NumColors]
+                : SmoothColor(z, c, stepNum);
+
+            bm32.SetPixel(ix, iy, color.R, color.G, color.B, 255);
         }
 
         // Return a smooth mandelbrot color.
