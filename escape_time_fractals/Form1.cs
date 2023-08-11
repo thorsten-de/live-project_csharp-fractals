@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Numerics;
+using System.Threading.Tasks;
 
 namespace escape_time_fractals
 {
@@ -419,13 +420,16 @@ namespace escape_time_fractals
             var stopwatch = Stopwatch.StartNew();
             // Draw the fractal.
             // (x, y) will be the corresponding point in world coordinates.
-            float y = WorldBounds.Y;
+            //float y = WorldBounds.Y;
 
             // Loop over the pixels.
-            for (int iy = 0; iy < bm32.Height; iy++)
+
+            Parallel.For(0, height, iy =>
+            //for (int iy = 0; iy < height; iy++)
             {
+                float y = DtoW(new PointF(0, iy)).Y;
                 float x = WorldBounds.X;
-                for (int ix = 0; ix < bm32.Width; ix++)
+                for (int ix = 0; ix < width; ix++)
                 {
                     // Device coordinate point (ix, iy) corresponds
                     // to world coordinate point (x, y).
@@ -455,8 +459,8 @@ namespace escape_time_fractals
                 }
 
                 // Move to the next row in world coordinates.
-                y += dy;
-            }
+             //   y += dy;
+            });
 
 
             stopwatch.Stop();
