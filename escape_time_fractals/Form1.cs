@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -398,9 +399,6 @@ namespace escape_time_fractals
 
             // Make sure the aspect ratios match.
             AdjustBounds();
-            Console.WriteLine(string.Format("{0}, {1}, {2}, {3}",
-                WorldBounds.Left, WorldBounds.Top,
-                WorldBounds.Right, WorldBounds.Bottom));
 
             // Find the X and Y scale factors.
             float dx = WorldBounds.Width /
@@ -417,6 +415,7 @@ namespace escape_time_fractals
             Bitmap32 bm32 = new Bitmap32(bm);
             bm32.LockBitmap();
 
+            var stopwatch = Stopwatch.StartNew();
             // Draw the fractal.
             // (x, y) will be the corresponding point in world coordinates.
             float y = WorldBounds.Y;
@@ -458,6 +457,12 @@ namespace escape_time_fractals
                 y += dy;
             }
 
+
+            stopwatch.Stop();
+            Console.Write(string.Format("{0}, {1}, {2}, {3} - ",
+                WorldBounds.Left, WorldBounds.Top,
+                WorldBounds.Right, WorldBounds.Bottom));
+            Console.WriteLine($"{stopwatch.ElapsedMilliseconds}ms to compute ({fractalPictureBox.ClientSize}, MaxIterations={MaxIterations}");
 
             // Unlock the Bitmap32.
             bm32.UnlockBitmap();
