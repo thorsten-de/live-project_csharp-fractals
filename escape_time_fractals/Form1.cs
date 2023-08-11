@@ -441,7 +441,7 @@ namespace escape_time_fractals
                     switch (FractalType)
                     {
                         case FractalTypes.Mandelbrot:
-                            OptimizedMandelbrotPoint(x, y, out z, out c, out stepNum);
+                            MandelbrotPoint(x, y, out z, out c, out stepNum);
                             break;
                         case FractalTypes.Julia:
                             JuliaPoint(x, y, out z, out c, out stepNum);
@@ -502,7 +502,7 @@ namespace escape_time_fractals
             double y2= 0, y = 0;
             stepNum = 0;
 
-            while (stepNum < MaxIterations && x2 + y2 <= 4)
+            while (stepNum < MaxIterations && x2 + y2 < 4)
             {
                 y = (x + x) * y + y0;
                 x = x2 - y2 + x0;
@@ -571,16 +571,47 @@ namespace escape_time_fractals
         // See http://csharphelper.com/blog/2014/07/draw-a-mandelbrot-set-fractal-with-smoothly-shaded-colors-in-c/
         private Color SmoothColor(Complex z, Complex c, int stepNum)
         {
-            // Replace the following with your code.
-            return Color.Black;
+            if (stepNum == 0)
+                return FractalColors[0];
+
+            for (int i = 0; i < 3; i++)
+            {
+                z = z * z + c;
+                stepNum++;
+            }
+
+            double mu = stepNum + 1 - Math.Log(Math.Log(z.Magnitude)) / LogEscape;
+
+            if (SmoothingType == SmoothingTypes.Smooth2)
+                mu = mu / MaxIterations * NumColors;
+
+            return MuToColor(mu);
         }
 
         private Color MuToColor(double mu)
         {
-            // Replace the following with your code.
-            return Color.Black;
+            int c1_idx = (int)mu;
+            double t2 = mu - c1_idx;
+            double t1 = 1 - t2;
+
+            return LinearInterpolation(
+                FractalColors[(c1_idx + 1) % NumColors],
+                FractalColors[c1_idx % NumColors],
+                t2
+                );
         }
 
         #endregion Fractal drawing
+
+        public Color LinearInterpolation(Color c1, Color c2, double t1)
+        {
+           double t2 =  1 - t1;
+           return  Color.FromArgb(
+           
+               (byte)(c1.R * t1 + c2.R * t2),
+               (byte)(c1.G * t1 + c2.G * t2),
+               (byte)(c1.B * t1 + c2.B * t2)
+           );
+        }
     }
 }
