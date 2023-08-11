@@ -522,10 +522,14 @@ namespace escape_time_fractals
         private void JuliaPoint(double x, double y,
             out Complex z, out Complex c, out int stepNum)
         {
-            // Replace the following with your code.
-            z = new Complex();
-            c = new Complex();
+            z = new Complex(x, y);
+            c = C0;
             stepNum = 0;
+            while (stepNum < MaxIterations && z.Magnitude < MaxMagnitude)
+            {
+                z = z * z + c;
+                stepNum++;
+        }
         }
 
         // Calculate the vortex fractal values for this point.
