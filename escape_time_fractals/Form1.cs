@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Numerics;
 
 namespace escape_time_fractals
 {
@@ -480,13 +481,38 @@ namespace escape_time_fractals
             z = Z0;
             c = new Complex(x, y);
             stepNum = 0;
-            
-            while (stepNum < MaxIterations && z.Magnitude() < MaxMagnitude)
+             
+            while (stepNum < MaxIterations && z.Magnitude < MaxMagnitude)
             {
                 z = z * z + c;
                 stepNum++;
             }
         }
+
+        // Calculate the Mandelbrot set values for this point.
+        private void OptimizedMandelbrotPoint(double x0, double y0,
+            out Complex z, out Complex c, out int stepNum)
+        {
+            // Replace the following with your code.
+            double x2 = 0, x = 0;
+            double y2= 0, y = 0;
+            stepNum = 0;
+
+            while (stepNum < MaxIterations && x2 + y2 <= 2)
+            {
+                y = (x + x) * y + y0;
+                x = x2 - y2 + x0;
+                x2 = x * x;
+                y2 = y * y;
+
+                stepNum++;
+            }
+
+            z = new Complex(x, y);
+            c = new Complex(x0, y0);
+        }
+
+
 
         // Calculate the Julia set values for this point.
         private void JuliaPoint(double x, double y,
