@@ -516,8 +516,6 @@ namespace escape_time_fractals
             c = new Complex(x0, y0);
         }
 
-
-
         // Calculate the Julia set values for this point.
         private void JuliaPoint(double x, double y,
             out Complex z, out Complex c, out int stepNum)
@@ -529,17 +527,29 @@ namespace escape_time_fractals
             {
                 z = z * z + c;
                 stepNum++;
-        }
+            }
         }
 
         // Calculate the vortex fractal values for this point.
         private void VortexPoint(double x, double y,
             out Complex z, out Complex c, out int stepNum)
         {
-            // Replace the following with your code.
-            z = new Complex();
-            c = new Complex();
+            var z_1 = new Complex(x, y);
+            var zN = new Complex(x, y);
+            c = new Complex(0.62, -0.55);
+            
             stepNum = 0;
+            while (stepNum < MaxIterations && zN.Magnitude < MaxMagnitude)
+            {
+                var zNext = zN * zN + c.Real + c.Imaginary * z_1;
+                z_1 = zN;
+                zN = zNext;
+
+                stepNum++;
+
+            }
+
+            z = zN;
         }
 
         // Set the pixel's color according to the
