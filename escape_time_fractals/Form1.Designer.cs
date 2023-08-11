@@ -66,7 +66,8 @@
             this.scaleToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(384, 24);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
+            this.menuStrip1.Size = new System.Drawing.Size(976, 25);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -77,7 +78,7 @@
             this.toolStripMenuItem1,
             this.mnuFileExit});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 19);
             this.fileToolStripMenuItem.Text = "&File";
             // 
             // mnuFileSaveAs
@@ -113,7 +114,7 @@
             this.toolStripMenuItem3,
             this.mnuSettingsChangeMaxIterations});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 19);
             this.settingsToolStripMenuItem.Text = "&Settings";
             // 
             // mnuSettingsMandelbrotSet
@@ -194,7 +195,7 @@
             this.toolStripMenuItem5,
             this.mnuScaleEnterSelectedArea});
             this.scaleToolStripMenuItem.Name = "scaleToolStripMenuItem";
-            this.scaleToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
+            this.scaleToolStripMenuItem.Size = new System.Drawing.Size(46, 19);
             this.scaleToolStripMenuItem.Text = "S&cale";
             // 
             // mnuScaleRedraw
@@ -252,19 +253,20 @@
             // 
             // fractalPictureBox
             // 
-            this.fractalPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.fractalPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.fractalPictureBox.BackColor = System.Drawing.Color.Black;
             this.fractalPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.fractalPictureBox.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.fractalPictureBox.Location = new System.Drawing.Point(12, 27);
+            this.fractalPictureBox.Location = new System.Drawing.Point(18, 42);
+            this.fractalPictureBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.fractalPictureBox.Name = "fractalPictureBox";
-            this.fractalPictureBox.Size = new System.Drawing.Size(360, 360);
+            this.fractalPictureBox.Size = new System.Drawing.Size(938, 952);
             this.fractalPictureBox.TabIndex = 1;
             this.fractalPictureBox.TabStop = false;
-            this.fractalPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.fractalPictureBox_MouseDown);
             this.fractalPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.fractalPictureBox_Paint);
+            this.fractalPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.fractalPictureBox_MouseDown);
             // 
             // sfdFractal
             // 
@@ -273,12 +275,13 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(384, 399);
+            this.ClientSize = new System.Drawing.Size(976, 1014);
             this.Controls.Add(this.fractalPictureBox);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Form1";
             this.Text = "escape_time_fractals";
             this.Load += new System.EventHandler(this.Form1_Load);
