@@ -437,7 +437,7 @@ namespace escape_time_fractals
                     switch (FractalType)
                     {
                         case FractalTypes.Mandelbrot:
-                            MandelbrotPoint(x, y, out z, out c, out stepNum);
+                            OptimizedMandelbrotPoint(x, y, out z, out c, out stepNum);
                             break;
                         case FractalTypes.Julia:
                             JuliaPoint(x, y, out z, out c, out stepNum);
@@ -498,7 +498,7 @@ namespace escape_time_fractals
             double y2= 0, y = 0;
             stepNum = 0;
 
-            while (stepNum < MaxIterations && x2 + y2 <= 2)
+            while (stepNum < MaxIterations && x2 + y2 <= 4)
             {
                 y = (x + x) * y + y0;
                 x = x2 - y2 + x0;
